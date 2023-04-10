@@ -10,6 +10,11 @@ import io
 import numpy as np
 import pandas as pd
 import pydeck as pdk
+from PIL import Image
+import os
+
+image1 = Image.open(os.path.join(os.path.dirname(__file__), 'GPS-Log-Messung1-Course.PNG'))
+image2 = Image.open(os.path.join(os.path.dirname(__file__), 'GPS.PNG'))
 
 class SatData:
     def __init__(self, id, elevation, azimuth, snr):
@@ -250,6 +255,8 @@ if submit:
                         rssiList.clear()
                 else:
                     st.write(f"Warning: Unable to parse some lines.  Please check file for errors")
+                    # use default file for demo
+                    
 
 
         except (nme.NMEAStreamError, nme.NMEAMessageError, nme.NMEATypeError, nme.NMEAParseError) as err:
@@ -267,6 +274,11 @@ if submit:
             saveKML(rssiDict, kmlFileName)
             showMap(rssiDict)
         
-        
+        st.image(image1)
     else:
+        st.image(image2)
         st.write("No file was uploaded!")
+
+
+
+
