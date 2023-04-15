@@ -16,8 +16,7 @@ from outlier import plot_zscore
 
 
 def load_data():
-    st.write("Upload a csv file")
-    uploaded_file = st.file_uploader("Choose a file",'csv')
+    uploaded_file = st.file_uploader("Upload",'csv')
     use_example_file = st.checkbox("Use example file",False,help="Use in-built example file for demo")
 
     status = False
@@ -44,7 +43,7 @@ def read_data(uploaded_file):
 def main():
 
     global output_df
-    st.title("Outlier Detection in Time-Series Data")
+    st.title("Outlier Detection")
     status = False
     set_index  = False
     basic_done = False
@@ -54,10 +53,7 @@ def main():
     if(status == True):
         df = read_data(uploaded_file)
         #st.write(df.head())
-        # use plotly express to plot the data
-        fig = px.line(df, x=df.columns[0], y=df.columns[1])
-        st.plotly_chart(fig)
-        
+
         st.write('Choose a column to set as an index. Data of column must be in date_time ')
         col_list = list(df.columns.values)
         col_list.insert(0,'None')
@@ -74,7 +70,7 @@ def main():
 
         if(set_index == True):
             df = df.set_index(indexx)
-            st.write(df.head())
+            # st.write(df.head())
             #st.write("Current frequency")
             #st.write(df.index.freq)
             try:

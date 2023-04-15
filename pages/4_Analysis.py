@@ -9,7 +9,7 @@ from sklearn.decomposition import PCA
 from sklearn.mixture import GaussianMixture
 from sklearn.model_selection import train_test_split
 
-st.title("Data Analysis")
+st.title("Clsasification of DP operation status")
 st.caption("Time series data analysis and classification based on 3DOF sensor data")
 
 training_results = {2:0, 3:0, 6:0}

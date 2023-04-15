@@ -6,60 +6,16 @@ from PIL import Image
 st.set_page_config(page_title='Project Demo', page_icon=':bar_chart:', layout='wide')
 
 # Title
-st.title('Automated offshore monitoring system')
-     #background-color: #ADD8E6;
-# Set the page background color using CSS styling
-st.markdown(
-    """
-    <style>
-    body {
-        background-image: url('./background.jpeg');
-        background-size: cover;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+st.title('Offshore Platform Monitoring System')
 st.write(
     """
-    This monitoring system is a prototype tool for analyzing offshore sensors, and the function includes,
+    This monitoring system is a prototype tool for analyzing offshore platform sensors
     """
 )
 
-st.subheader('GPS Positioning')
-st.write(
-    """
-    Visualize the GPS position of the assets.
-    """
-)
-
-st.subheader('Sensor Dashboard')
-st.write(
-    """
-    Show relevant sensor data from selected asset.
-    """
-)
-st.subheader('Data Processing')
-st.write(
-    """
-    Resample, denoise and detect outliers.
-    """
-)
-
-st.subheader('Data Analysis')
-st.write(
-    """
-    Machine learning Algorithms based on selected sensor.
-    Mainly time series classification based on selected features.
-    """
-)
-
-st.subheader('Auto Monitoring')
-st.write(
-    """
-    Predict the sensor data based on data analysis and visualization the detion result.
-    """
-)   
+# show a picture
+image = Image.open('./images/home.png')
+st.image(image, caption='functions', use_column_width=True)
 st.subheader('Contact')
 c1, c2, = st.columns(2)
 with c1:
