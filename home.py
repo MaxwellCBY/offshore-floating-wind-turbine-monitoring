@@ -7,8 +7,19 @@ st.set_page_config(page_title='Project Demo', page_icon=':bar_chart:', layout='w
 
 # Title
 st.title('Automated offshore monitoring system')
-
-
+     #background-color: #ADD8E6;
+# Set the page background color using CSS styling
+st.markdown(
+    """
+    <style>
+    body {
+        background-image: url('./background.jpeg');
+        background-size: cover;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 st.write(
     """
     This monitoring system is a prototype tool for analyzing offshore sensors, and the function includes,
