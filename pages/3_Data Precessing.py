@@ -4,6 +4,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from pandas.plotting import lag_plot
 from statsmodels.stats.diagnostic import kstest_normal
+import plotly.express as px
 
 
 from outlier import downsample_func
@@ -52,13 +53,17 @@ def main():
     #st.write(status)
     if(status == True):
         df = read_data(uploaded_file)
-        st.write(df.head())
+        #st.write(df.head())
+        # use plotly express to plot the data
+        fig = px.line(df, x=df.columns[0], y=df.columns[1])
+        st.plotly_chart(fig)
+        
         st.write('Choose a column to set as an index. Data of column must be in date_time ')
         col_list = list(df.columns.values)
         col_list.insert(0,'None')
         indexx = st.selectbox('Which column you want as index:',col_list)
 
-        st.write('You Selected: ',indexx)
+        #st.write('You Selected: ',indexx)
 
         try:
             df[indexx] = pd.to_datetime(df[indexx])

@@ -9,11 +9,8 @@ from sklearn.decomposition import PCA
 from sklearn.mixture import GaussianMixture
 from sklearn.model_selection import train_test_split
 
-st.title("Time Series Classification")
-st.caption("Classify time series data using machine learning algorithms")
-st.header("3 DOF accelerator sensor Data")
-
-st.header("Data Collection")
+st.title("Data Analysis")
+st.caption("Time series data analysis and classification based on 3DOF sensor data")
 
 training_results = {2:0, 3:0, 6:0}
 testing_results = {2:0, 3:0, 6:0}
@@ -33,58 +30,62 @@ sc1 = Image.open('./images/pca6.png')
 pca2 = Image.open('./images/pca2.png')
 pca3 = Image.open('./images/pca5.png')
 pca6 = Image.open('./images/pca4.png')
+normal = Image.open('./images/normal.png')
+standby = Image.open('./images/standby.png')
+check = Image.open('./images/check.png')
 
 ## Loading raw data from csv file
 if st.button("Fetch Data") or 'fetch' in st.session_state.keys():
     
-    st.subheader("Displaying raw wellness data from wearable")
+    st.subheader("Clasify operation status of the DP")
     if 'fetch' not in st.session_state.keys():
         st.session_state['fetch'] = True
     if st.checkbox("Preview Data"):
         # Preview dataframe in the web applet
-        st.dataframe(df)
+        #st.dataframe(df)
+       
+        # make a selection box for the user to choose which column to plot
+        # the selection box has 3 options: x, y, z
+        # the default option is x
+        # plot the columns of x,y,z, the x axis is the time of the dataframe
+        option = st.selectbox(
+            'Choose a column to plot',
+            ('x', 'y', 'z'))
+        st.write('You selected:', option)
+        fig = plt.figure()
+        plt.plot(df.index,df[option])
+        plt.xlabel('Time')
+        plt.ylabel("Acceleration (m/s^2)")
+        plt.title("Acceleration of "+option+" axis")
+        st.pyplot(fig)
 
     st.markdown(
         """
-        > **Note:** The data is pre-collected from the wearable device and is not real-time data.
-        
-        **Database features**:
-        - `person_id`: Unique ID for each participant
-        - `exercise`: Defines type of exercise done by user
-            - `0`: No exercise
-            - `1`: Walking
-            - `2`: Running stairs
-            - `3`: Plank
-            - `4`: HIIT
-            - `5`: Squats
-        - `heart_rate`: Heart rate collected from wearable device
-        - `SPO`: Oxygen saturation collected from wearable device
-        - `heart_rate_base`: Heart rate collected from commercial fingertip oximeter
-        - `SPO_base`: Oxygen saturation collected from commercial fingertip oximeter
-        - `X`,`Y`,`Z`: Accelerometer data collected from accompanying mobile device in acceleration (m/s^2)
+        > 
+        - `Status`: 
+           - `0`: Normal
+           - `1`: Stand-by
+           - `2`: Check
         """)
 
 
     st.subheader("Data Visualization")
-    st.caption("Let's see how the data looks like.")
+    #st.caption("Let's see how the data looks like.")
     option = st.selectbox(
         'Choose a visulization type',
-        ('none','Boxplot', 'Stacked Bar Chart', 'Density Distribution', 'Scatter Plot','PCA'))
+        ('PCA','Normal', 'Standby', 'Check', 'Scatter Plot'))
 
-    if option == 'Boxplot':
-        st.image(box1, caption='Box Plot for spO2', use_column_width=True)
-        st.image(box2, caption='Box Plot for Heart Rate', use_column_width=True)
+    if option == 'Normal':
+        st.image(normal, caption='DP in normal condition', use_column_width=True)
 
-    elif option == 'Stacked Bar Chart':
-        st.image(stack1, caption='Stacked Bar Chart for spO2', use_column_width=True)
-        st.image(stack2, caption='Stacked Bar Chart for Heart Rate', use_column_width=True)
+    elif option == 'Standby':
+        st.image(standby, caption='DP in standby condition', use_column_width=True)
     
-    elif option == 'Density Distribution':
-        st.image(dd1, caption='spO2 Density Distribution Plot', use_column_width=True)
-        st.image(dd2, caption='Heart Rate Density Distribution Plot', use_column_width=True)
+    elif option == 'Check':
+        st.image(check, caption='DP in check condition', use_column_width=True)
 
     elif option == 'Scatter Plot':
-        st.image(sc1, caption='Scatter Plot for spO2, Heart Rate and XYZ', use_column_width=True)
+        st.image(sc1, caption='Scatter Plot for XYZ', use_column_width=True)
     
     elif option == 'PCA':
         clusters = st.select_slider("Select number of clusters to visualize",[2,3,6])
@@ -97,8 +98,8 @@ if st.button("Fetch Data") or 'fetch' in st.session_state.keys():
             st.markdown(
                 """
                 **Cluster breakdown**:
-                - `0`: No exercise, Walking, Plank, Running stairs 
-                - `1`: HIIT (Mountain Climbing), Squats
+                - `0`: Normal
+                - `1`: Standby
                 """
             )
         elif clusters == 3:
@@ -106,37 +107,24 @@ if st.button("Fetch Data") or 'fetch' in st.session_state.keys():
             st.markdown(
                 """
                 **Cluster breakdown**:
-                - `0`: No exercise, Walking, Plank
-                - `1`: Running stairs
-                - `2`: HIIT (Mountain Climbing), Squats
+                - `0`: Normal
+                - `1`: Standby
+                - `2`: Check
                 """
             )
         elif clusters == 6:
             st.image(pca6, caption='PCA for 6 clusters', use_column_width=True)
-            st.markdown(
-                """
-                **Cluster breakdown**:
-                - `0`: No exercise, Walking, Plank
-                - `1`: Running stairs
-                - `2`: HIIT (Mountain Climbing), Squats
-                - `3`: Mountain Climbing
-                - `4`: Squats
-                - `5`: Mountain Climbing, Squats
-                """
-            )
+    
 
 
-    st.subheader("Model Training")
-    st.caption("We will now train a model using the collected data for 2 clusters.")
+    st.subheader("Results")
 
-    if st.button("Train Data") or 'train' in st.session_state.keys():
+    if st.button("Classify") or 'train' in st.session_state.keys():
         st.markdown(
         """        
         **Model Details**:
-        -  **PCA**: We use PCA to reduce the dimensionality of the data to 3D.
-        -  **GMM**: We use a Gaussian Mixture Model to cluster the resulting PCA data. 
-
-        The per-point clustering accuracy of the model is also shown below.
+        -  **PCA**: PCA to reduce the dimensionality of the data to 3D.
+        -  **GMM**: Gaussian Mixture Model to cluster the resulting PCA data. 
         """)
 
         def apply_pca(df_m):
@@ -178,6 +166,8 @@ if st.button("Fetch Data") or 'fetch' in st.session_state.keys():
         gm.fit(df_m)
         
         tr_res = ((labels==gm.predict(df_m)).sum()*100)/df_m.shape[0]
+        # keep 1 decimal place
+        tr_res = round(tr_res, 1)
 
         # testing
 
@@ -194,12 +184,17 @@ if st.button("Fetch Data") or 'fetch' in st.session_state.keys():
         )
             
         ts_res = ((labels_val_n==gm.predict(apply_pca(df_val))).sum()*100)/df_val.shape[0]
+        # keep 1 decimal place
+        ts_res = round(ts_res, 1)
         
-        st.subheader("Results")
-        st.write("Training Accuracy: ", tr_res)
-        st.write("Testing Accuracy: ", ts_res)
-
-  
-
+        # training accuracy is tr_res/tr_res %
+        st.write("Score: ", round(ts_res/tr_res*100,1), "%" )
+        # markdown that "Based on comparison with historical data, the DP working condition is Normal", 
+        # highlight the word "Normal" in green color
+        st.markdown(
+            """
+            The DP working condition is **Normal**.
+            """
+        )
 
 
